@@ -1,12 +1,14 @@
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const dbRef = db.ref('dotastats');
+let dbLoaded = false; // sync must not run before the first snapshot arrives
 
 function initFirebase() {
   document.getElementById('leaderboard-list').innerHTML =
     '<div class="empty-state" style="color:var(--c-muted)">Connecting...</div>';
 
   dbRef.on('value', snapshot => {
+    dbLoaded = true;
     const data = snapshot.val() || {};
     state.players        = data.players        || [];
     state.matches        = data.matches        || [];

@@ -5,7 +5,7 @@
 const SYNC_COOLDOWN_MS   = 10 * 60 * 1000;
 const SYNC_LOCK_STALE_MS = 3 * 60 * 1000;
 const SYNC_MAX_LOOKBACK_DAYS = 30;  // hard cap; the real boundary is state.seasonStart
-const SYNC_MAX_POLL      = 20;      // player histories fetched per sync
+const SYNC_MAX_POLL      = 45;      // player histories fetched per sync (spaced to respect OpenDota's 60/min)
 const SYNC_MAX_NEW       = 60;      // match details fetched per sync
 const SYNC_MIN_KNOWN     = 6;       // players already in roster for a game to count as ours
 
@@ -50,24 +50,26 @@ function playerByAccount(accountId) {
   return state.players.find(p => String(p.accountId) === String(accountId)) || null;
 }
 
-// Which accounts' histories to poll: recently active board players first,
-// then remaining roster members, capped to stay inside OpenDota rate limits.
+// Which accounts' histories to poll: every current board player, then a random
+// rotation of remaining roster members to fill up to the cap. Board players are
+// never dropped — the cap only trims the roster fill.
 function buildPollList(roster) {
   const seen = new Set();
   const list = [];
   const push = id => { const k = String(id); if (!seen.has(k)) { seen.add(k); list.push(k); } };
-  const nameToAccount = {};
-  state.players.forEach(p => { if (p.accountId) nameToAccount[p.name] = p.accountId; });
-  [...state.matches].reverse().forEach(m => {
-    [...m.team1, ...m.team2].forEach(n => { if (nameToAccount[n]) push(nameToAccount[n]); });
-  });
   state.players.forEach(p => { if (p.accountId) push(p.accountId); });
-  Object.keys(roster).forEach(push);
-  return list.slice(0, SYNC_MAX_POLL);
+  const fill = Object.keys(roster).filter(id => !seen.has(String(id)));
+  for (let i = fill.length - 1; i > 0; i--) { // shuffle so unpolled members rotate in over time
+    const j = Math.floor(Math.random() * (i + 1));
+    [fill[i], fill[j]] = [fill[j], fill[i]];
+  }
+  fill.forEach(id => { if (list.length < SYNC_MAX_POLL) push(id); });
+  return list;
 }
 
 async function runFaceitSync() {
   if (syncRunning) return;
+  if (!dbLoaded) { showToast('Still connecting — try again in a moment', true); return; }
   const last = syncInfo.lastSyncAt || 0;
   if (Date.now() - last < SYNC_COOLDOWN_MS) { showToast('Already synced recently', true); return; }
 
@@ -103,7 +105,8 @@ async function runFaceitSync() {
           }
         });
       } catch (e) { /* one player failing shouldn't kill the sync */ }
-      await syncSleep(300);
+      await syncSleep(1000); // stay under OpenDota's 60 calls/min
+
     }
 
     // Newest first: latest games land on the board immediately; older ones backfill on later syncs
@@ -120,7 +123,7 @@ async function runFaceitSync() {
         catch (e) { await syncSleep(2000); }
       }
       if (!md) continue;
-      await syncSleep(600);
+      await syncSleep(1000);
 
       if (!md.players || md.players.length !== 10) continue;
       if (!(md.leagueid > 0)) continue; // must carry a tournament ticket
