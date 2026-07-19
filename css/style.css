@@ -142,6 +142,7 @@ body:not(.admin-mode) .admin-content { display: none; }
 .cmp-swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
 .cmp-swatch.cmp-us { background: #9a7fc9; }
 .cmp-swatch.cmp-pro { background: #b98a3e; }
+.cmp-note { text-align: center; font-size: 11px; color: var(--c-muted); margin-bottom: 12px; }
 .cmp-chart { display: flex; flex-direction: column; gap: 8px; }
 .cmp-row { display: grid; grid-template-columns: 1fr 64px 1fr; gap: 8px; align-items: center; }
 .cmp-track { background: var(--c-surface2); border-radius: 4px; height: 12px; position: relative; }

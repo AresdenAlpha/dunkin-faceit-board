@@ -88,6 +88,7 @@ function renderProCompare(top, ourGames) {
       <div></div>
       <div class="cmp-head-right">Dunkin In-House<span class="cmp-swatch cmp-us"></span></div>
     </div>
+    <div class="cmp-note">Δ = Dunkin − pro contest rate, in percentage points</div>
     <div class="cmp-chart">${rows}</div>`;
 
   if (!el._tipBound) {
