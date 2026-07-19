@@ -33,8 +33,8 @@ function computeStats() {
   state.matches
     .filter(m => (m.season || 1) === season)
     .forEach(m => {
-      const winners = m.winner === 'amber' ? m.team1 : m.team2;
-      const losers  = m.winner === 'amber' ? m.team2 : m.team1;
+      const winners = m.winner === 'radiant' ? m.team1 : m.team2;
+      const losers  = m.winner === 'radiant' ? m.team2 : m.team1;
       winners.forEach(n => {
         if (!stats[n]) stats[n] = { wins: 0, losses: 0, games: 0 };
         stats[n].wins++; stats[n].games++;

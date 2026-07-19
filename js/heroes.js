@@ -2,15 +2,15 @@ let heroes = [];
 
 async function loadHeroes() {
   try {
-    const res = await fetch('https://assets.deadlock-api.com/v2/heroes?only_active=true');
+    const res = await fetch('https://api.opendota.com/api/heroStats');
     const data = await res.json();
     heroes = data
-      .filter(h => h.name && !h.name.startsWith('hero_'))
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .filter(h => h.localized_name)
+      .sort((a, b) => a.localized_name.localeCompare(b.localized_name))
       .map(h => ({
         id: h.id,
-        name: h.name,
-        icon: h.images?.icon_hero_card_webp || h.images?.minimap_image || null
+        name: h.localized_name,
+        icon: h.icon ? 'https://cdn.cloudflare.steamstatic.com' + h.icon : null
       }));
     renderMatchForm();
   } catch(e) {

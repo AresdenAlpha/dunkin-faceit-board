@@ -10,6 +10,8 @@
   --c-muted: #6b7280;
   --c-accent: #a855f7;
   --c-accent2: #3a9eff;
+  --c-radiant: #6fbf3f;
+  --c-dire: #e04a3f;
   --c-win: #34c97a;
   --c-lose: #e84040;
   --c-win-bg: rgba(52,201,122,0.1);
@@ -126,8 +128,8 @@ body:not(.admin-mode) .admin-content { display: none; }
 .match-teams { display: flex; flex-direction: column; gap: 6px; }
 .match-team { display: flex; align-items: center; gap: 6px; font-size: 13px; flex-wrap: wrap; }
 .team-label { font-size: 10px; letter-spacing: 1px; font-weight: 600; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; margin-right: 4px; }
-.team-label.amber { background: rgba(168,85,247,0.15); color: var(--c-accent); }
-.team-label.blue { background: rgba(58,158,255,0.15); color: var(--c-accent2); }
+.team-label.radiant { background: rgba(111,191,63,0.15); color: var(--c-radiant); }
+.team-label.dire { background: rgba(224,74,63,0.15); color: var(--c-dire); }
 .player-pill { padding: 2px 8px; border-radius: 4px; font-size: 12px; background: var(--c-surface2); border: 1px solid var(--c-border); }
 .match-meta { text-align: right; font-size: 12px; color: var(--c-muted); }
 .match-date { font-family: 'Share Tech Mono', monospace; font-size: 11px; }
@@ -197,8 +199,8 @@ select option { background: var(--c-surface2); }
   font-size: 13px; letter-spacing: 1px; text-transform: uppercase; transition: all 0.15s;
   background: transparent; color: var(--c-muted);
 }
-.win-btn.selected-amber { background: rgba(168,85,247,0.2); color: var(--c-accent); border-color: var(--c-accent); }
-.win-btn.selected-blue { background: rgba(58,158,255,0.2); color: var(--c-accent2); border-color: var(--c-accent2); }
+.win-btn.selected-radiant { background: rgba(111,191,63,0.2); color: var(--c-radiant); border-color: var(--c-radiant); }
+.win-btn.selected-dire { background: rgba(224,74,63,0.2); color: var(--c-dire); border-color: var(--c-dire); }
 
 .textarea-players { min-height: 80px; resize: vertical; }
 .hint { font-size: 11px; color: var(--c-muted); margin-top: 4px; }

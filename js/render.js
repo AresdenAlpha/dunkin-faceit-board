@@ -51,8 +51,8 @@ function renderMatches() {
   }
   el.innerHTML = [...state.matches].reverse().map((m, ri) => {
     const realIdx = state.matches.length - 1 - ri;
-    const winColor = m.winner === 'amber' ? 'var(--c-accent)' : 'var(--c-accent2)';
-    const winLabel = m.winner === 'amber' ? 'Amber' : 'Blue';
+    const winColor = m.winner === 'radiant' ? 'var(--c-radiant)' : 'var(--c-dire)';
+    const winLabel = m.winner === 'radiant' ? 'Radiant' : 'Dire';
     const pills1 = m.team1.map((n, idx) => {
       const hid = m.heroes1 ? m.heroes1[idx] : null;
       const icon = hid ? heroIconHtml(hid, 22) : '';
@@ -63,8 +63,8 @@ function renderMatches() {
       const icon = hid ? heroIconHtml(hid, 22) : '';
       return `<span class="player-hero-pill">${icon}<span>${escHtml(n)}</span></span>`;
     }).join('');
-    const t1win = m.winner === 'amber' ? '<span class="winner-tag">WIN</span>' : '';
-    const t2win = m.winner === 'blue'  ? '<span class="winner-tag">WIN</span>' : '';
+    const t1win = m.winner === 'radiant' ? '<span class="winner-tag">WIN</span>' : '';
+    const t2win = m.winner === 'dire'    ? '<span class="winner-tag">WIN</span>' : '';
     const delBtn = isAdmin
       ? `<button class="btn-danger del-match" data-idx="${realIdx}">del</button>`
       : '';
@@ -78,8 +78,8 @@ function renderMatches() {
         <div style="margin-top:8px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center">${delBtn}${expBtn}</div>
       </div>
       <div class="match-teams">
-        <div class="match-team"><span class="team-label amber">Amber</span>${t1win} ${pills1}</div>
-        <div class="match-team" style="margin-top:4px"><span class="team-label blue">Blue</span>${t2win} ${pills2}</div>
+        <div class="match-team"><span class="team-label radiant">Radiant</span>${t1win} ${pills1}</div>
+        <div class="match-team" style="margin-top:4px"><span class="team-label dire">Dire</span>${t2win} ${pills2}</div>
         ${m.notes ? `<div style="font-size:12px;color:var(--c-muted);margin-top:6px;font-style:italic">${escHtml(m.notes)}</div>` : ''}
       </div>
       <div class="match-meta">
@@ -168,12 +168,12 @@ function renderMatchForm() {
     const el = document.getElementById(containerId);
     if (!el) return;
     const existing = {};
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 5; i++) {
       const pid = `t${ti+1}p${i}`, hid = `t${ti+1}h${i}`;
       existing[pid] = csdGetValue(pid);
       existing[hid] = csdGetValue(hid);
     }
-    const rows = Array.from({length: 6}, (_, i) => {
+    const rows = Array.from({length: 5}, (_, i) => {
       const pid = `t${ti+1}p${i}`, hid = `t${ti+1}h${i}`;
       return `<div class="player-hero-row">
         ${makeCsd(pid, playerItems, '— Player —')}
@@ -181,7 +181,7 @@ function renderMatchForm() {
       </div>`;
     }).join('');
     el.innerHTML = rows;
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 5; i++) {
       const pid = `t${ti+1}p${i}`, hid = `t${ti+1}h${i}`;
       if (existing[pid]) {
         const item = playerItems.find(p => p.value === existing[pid]);

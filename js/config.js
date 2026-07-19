@@ -1,9 +1,9 @@
 const firebaseConfig = {
-  apiKey: "AIzaSyDiHXZH6pP1AoJSPg9037UGOwsVuV34bss",
-  authDomain: "mystic-inhouse-dev.firebaseapp.com",
-  databaseURL: "https://mystic-inhouse-dev-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "mystic-inhouse-dev",
-  storageBucket: "mystic-inhouse-dev.firebasestorage.app",
-  messagingSenderId: "724659705849",
-  appId: "1:724659705849:web:2fe265926a526a6789cf28"
+  apiKey: "AIzaSyDneXTYeuyYTDJ_UL8fY-NpxVixy6r_Zxg",
+  authDomain: "dunkin-faceit-board.firebaseapp.com",
+  databaseURL: "https://dunkin-faceit-board-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "dunkin-faceit-board",
+  storageBucket: "dunkin-faceit-board.firebasestorage.app",
+  messagingSenderId: "447313951062",
+  appId: "1:447313951062:web:4c5a9b5341aeeb77277ef7"
 };

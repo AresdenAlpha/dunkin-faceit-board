@@ -57,7 +57,7 @@ function deleteMatch(idx) {
   if (!m) return;
   const t1 = m.team1.join(', ');
   const t2 = m.team2.join(', ');
-  const winner = m.winner === 'amber' ? 'Amber' : 'Blue';
+  const winner = m.winner === 'radiant' ? 'Radiant' : 'Dire';
   showConfirm('Delete Match',
     `Delete match: <strong>${escHtml(t1)}</strong> vs <strong>${escHtml(t2)}</strong>?<br><span style="color:var(--c-muted);font-size:12px">Winner: ${winner} — ${m.date || 'no date'}</span>`,
     () => {
@@ -72,8 +72,8 @@ function deleteMatch(idx) {
 
 function selectWinner(team) {
   selectedWinner = team;
-  document.getElementById('win-btn-amber').className = 'win-btn' + (team === 'amber' ? ' selected-amber' : '');
-  document.getElementById('win-btn-blue').className  = 'win-btn' + (team === 'blue'  ? ' selected-blue'  : '');
+  document.getElementById('win-btn-radiant').className = 'win-btn' + (team === 'radiant' ? ' selected-radiant' : '');
+  document.getElementById('win-btn-dire').className    = 'win-btn' + (team === 'dire'    ? ' selected-dire'    : '');
 }
 
 function logMatch() {
@@ -83,23 +83,23 @@ function logMatch() {
   const notes    = document.getElementById('match-notes').value.trim();
 
   const team1 = [], team2 = [], heroes1 = [], heroes2 = [];
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 5; i++) {
     team1.push(csdGetValue(`t1p${i}`));
     heroes1.push(csdGetValue(`t1h${i}`) ? parseInt(csdGetValue(`t1h${i}`)) : null);
     team2.push(csdGetValue(`t2p${i}`));
     heroes2.push(csdGetValue(`t2h${i}`) ? parseInt(csdGetValue(`t2h${i}`)) : null);
   }
 
-  if (team1.some(p => !p)) { showToast('All 6 Amber players must be selected', true); return; }
-  if (team2.some(p => !p)) { showToast('All 6 Blue players must be selected', true); return; }
+  if (team1.some(p => !p)) { showToast('All 5 Radiant players must be selected', true); return; }
+  if (team2.some(p => !p)) { showToast('All 5 Dire players must be selected', true); return; }
   if (!selectedWinner) { showToast('Select the winning team', true); return; }
 
   const allPlayers = [...team1, ...team2];
   const unique = new Set(allPlayers);
   if (unique.size !== allPlayers.length) { showToast('A player cannot appear twice in the same match', true); return; }
 
-  if (heroes1.some(h => !h)) { showToast('All 6 Amber heroes must be selected', true); return; }
-  if (heroes2.some(h => !h)) { showToast('All 6 Blue heroes must be selected', true); return; }
+  if (heroes1.some(h => !h)) { showToast('All 5 Radiant heroes must be selected', true); return; }
+  if (heroes2.some(h => !h)) { showToast('All 5 Dire heroes must be selected', true); return; }
 
   const match = {
     team1, team2, heroes1, heroes2,
@@ -107,19 +107,19 @@ function logMatch() {
     season: state.currentSeason || 1
   };
   state.matches.push(match);
-  const winner = selectedWinner === 'amber' ? 'Amber' : 'Blue';
-  audit('log', `Logged match — ${winner} won. Amber: [${team1.join(', ')}] vs Blue: [${team2.join(', ')}]${date ? ' on ' + date : ''}`, { match });
+  const winner = selectedWinner === 'radiant' ? 'Radiant' : 'Dire';
+  audit('log', `Logged match — ${winner} won. Radiant: [${team1.join(', ')}] vs Dire: [${team2.join(', ')}]${date ? ' on ' + date : ''}`, { match });
   saveState();
 
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 5; i++) {
     csdReset(`t1p${i}`); csdReset(`t1h${i}`);
     csdReset(`t2p${i}`); csdReset(`t2h${i}`);
   }
   document.getElementById('match-duration').value = '';
   document.getElementById('match-notes').value = '';
   selectedWinner = null;
-  document.getElementById('win-btn-amber').className = 'win-btn';
-  document.getElementById('win-btn-blue').className  = 'win-btn';
+  document.getElementById('win-btn-radiant').className = 'win-btn';
+  document.getElementById('win-btn-dire').className    = 'win-btn';
 
   showToast('Match logged!');
   showTab('matches');
@@ -138,7 +138,7 @@ function exportDataConfirm() {
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
       a.href = url;
-      a.download = `mystic-league-backup-${new Date().toISOString().slice(0,10)}.json`;
+      a.download = `dunkin-faceit-backup-${new Date().toISOString().slice(0,10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
       showToast('Backup exported!');
@@ -172,12 +172,12 @@ function importMatchIntoForm(e) {
     try {
       const m = JSON.parse(ev.target.result);
       if (!m.team1 || !m.team2 || !m.winner) throw new Error('Invalid format');
-      if (m.team1.length !== 6 || m.team2.length !== 6) throw new Error('Must be 6v6');
+      if (m.team1.length !== 5 || m.team2.length !== 5) throw new Error('Must be 5v5');
       document.getElementById('match-date').value = m.date || '';
       document.getElementById('match-duration').value = m.duration || '';
       document.getElementById('match-notes').value = m.notes || '';
       selectWinner(m.winner);
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 5; i++) {
         const pName1 = m.team1[i] || '';
         const pName2 = m.team2[i] || '';
         const hId1 = m.heroes1 ? m.heroes1[i] : null;

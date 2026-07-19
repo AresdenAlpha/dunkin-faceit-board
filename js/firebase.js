@@ -1,6 +1,6 @@
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const dbRef = db.ref('deadstats');
+const dbRef = db.ref('dotastats');
 
 function initFirebase() {
   document.getElementById('leaderboard-list').innerHTML =
