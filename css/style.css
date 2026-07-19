@@ -171,6 +171,14 @@ select option { background: var(--c-surface2); }
 }
 .btn-sm:hover { background: var(--c-border2); }
 
+.sync-btn {
+  background: rgba(168,85,247,0.12); color: var(--c-accent); border: 1px solid rgba(168,85,247,0.35);
+  border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  padding: 6px 14px; cursor: pointer; font-family: 'Rajdhani', sans-serif; transition: all 0.15s; white-space: nowrap;
+}
+.sync-btn:hover:not(:disabled) { background: rgba(168,85,247,0.25); border-color: var(--c-accent); }
+.sync-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
 /* Players */
 .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
 .player-card { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 10px; padding: 16px; transition: border-color 0.15s; }
