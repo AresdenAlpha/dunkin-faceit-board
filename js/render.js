@@ -111,9 +111,6 @@ function renderPlayers() {
     const av = getColor(p.name);
     const s = stats[p.name] || { wins: 0, losses: 0, games: 0 };
     const w = wr(s);
-    const delBtn = isAdmin
-      ? `<button class="btn-danger del-player" data-idx="${idx}">x</button>`
-      : '';
     const renameBtn = isAdmin
       ? `<button class="btn-sm rename-player" data-idx="${idx}" style="font-size:10px;padding:2px 8px">rename</button>`
       : '';
@@ -127,7 +124,6 @@ function renderPlayers() {
           <div class="player-card-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(p.name)}</div>
           <span class="wr-badge" style="color:${wrColor(w)};background:${wrColor(w)}1a">${w}% WR</span>
         </div>
-        ${delBtn}
       </div>
       ${renameBtn ? `<div style="margin-bottom:8px">${renameBtn}</div>` : ''}
       <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px">${heroIcons}</div>

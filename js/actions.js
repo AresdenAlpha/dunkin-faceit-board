@@ -21,20 +21,6 @@ function renamePlayer(idx) {
   });
 }
 
-function removePlayer(idx) {
-  if (!isAdmin) return;
-  const p = state.players[idx];
-  if (!p) return;
-  showConfirm('Remove Player', `Remove <strong>${escHtml(p.name)}</strong>? Their match history stays intact.`, () => {
-    if (!state.deletedPlayers) state.deletedPlayers = [];
-    state.deletedPlayers.push({ ...p, deletedAt: new Date().toISOString() });
-    audit('del', `Removed player "${p.name}"`, { player: p });
-    state.players.splice(idx, 1);
-    saveState(); render();
-    showToast('Player removed');
-  });
-}
-
 function deleteMatch(idx) {
   if (!isAdmin) return;
   const m = state.matches[idx];

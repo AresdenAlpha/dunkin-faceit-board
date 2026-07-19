@@ -140,8 +140,6 @@
     if (matchBtn) { deleteMatch(parseInt(matchBtn.dataset.idx, 10)); return; }
     const expBtn = e.target.closest('.exp-match');
     if (expBtn) { exportMatch(parseInt(expBtn.dataset.idx, 10)); return; }
-    const playerBtn = e.target.closest('.del-player');
-    if (playerBtn) { removePlayer(parseInt(playerBtn.dataset.idx, 10)); return; }
     const renameBtn = e.target.closest('.rename-player');
     if (renameBtn) { renamePlayer(parseInt(renameBtn.dataset.idx, 10)); return; }
   });
