@@ -1,13 +1,13 @@
 function showTab(tab) {
-  const tabs = ['leaderboard','matches','players','log'];
+  const tabs = ['leaderboard','matches','players','heroes','log'];
   tabs.forEach(t => {
     const el = document.getElementById('tab-' + t);
     if (el) el.classList.toggle('visible', t === tab);
   });
   document.querySelectorAll('.nav button').forEach((b, i) => {
     const tabNames = isAdmin
-      ? ['leaderboard','matches','players','log']
-      : ['leaderboard','matches','players'];
+      ? ['leaderboard','matches','players','heroes','log']
+      : ['leaderboard','matches','players','heroes'];
     b.classList.toggle('active', tabNames[i] === tab);
   });
 }

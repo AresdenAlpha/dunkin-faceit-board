@@ -174,7 +174,10 @@ async function runFaceitSync() {
         notes: '',
         season: state.currentSeason || 1,
         matchId: md.match_id,
-        startTime: md.start_time
+        startTime: md.start_time,
+        // draft data: h=hero, p=1 pick/0 ban, t=0 radiant/1 dire, o=order
+        picksBans: (md.picks_bans || []).map(pb => ({ h: pb.hero_id, p: pb.is_pick ? 1 : 0, t: pb.team, o: pb.order })),
+        captains: { radiant: md.radiant_captain || null, dire: md.dire_captain || null }
       });
     }
 

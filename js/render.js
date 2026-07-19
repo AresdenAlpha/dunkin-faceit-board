@@ -3,7 +3,54 @@ function render() {
   renderLeaderboard();
   renderMatches();
   renderPlayers();
+  renderHeroStats();
   renderAuditLog();
+}
+
+function renderHeroStats() {
+  const el = document.getElementById('hero-stats-list');
+  const sub = document.getElementById('heroes-subtitle');
+  if (!el) return;
+  const season = state.currentSeason || 1;
+  const drafted = state.matches.filter(m => (m.season || 1) === season && m.picksBans && m.picksBans.length);
+  if (!drafted.length) {
+    el.innerHTML = '<div class="empty-state">No draft data yet.<br>Stats appear after synced games.</div>';
+    if (sub) sub.textContent = '';
+    return;
+  }
+  if (sub) sub.textContent = `Season ${season} — ${drafted.length} drafted game${drafted.length > 1 ? 's' : ''}`;
+
+  const hs = {}; // heroId -> {picks, bans, wins}
+  drafted.forEach(m => {
+    m.picksBans.forEach(pb => {
+      const s = hs[pb.h] || (hs[pb.h] = { picks: 0, bans: 0, wins: 0 });
+      if (pb.p) {
+        s.picks++;
+        const pickedByRadiant = pb.t === 0;
+        if ((m.winner === 'radiant') === pickedByRadiant) s.wins++;
+      } else {
+        s.bans++;
+      }
+    });
+  });
+
+  const top = Object.entries(hs)
+    .sort((a, b) => (b[1].picks + b[1].bans) - (a[1].picks + a[1].bans) || b[1].picks - a[1].picks)
+    .slice(0, 15);
+
+  el.innerHTML = top.map(([id, s], i) => {
+    const contest = Math.round(((s.picks + s.bans) / drafted.length) * 100);
+    const w = s.picks ? Math.round((s.wins / s.picks) * 100) : null;
+    const h = heroById(parseInt(id));
+    return `<div class="lb-row" style="grid-template-columns:36px 1fr 70px 70px 90px 80px">
+      <div class="rank">#${i + 1}</div>
+      <div class="player-name">${heroIconHtml(parseInt(id), 32)} ${escHtml(h ? h.name : 'Hero ' + id)}</div>
+      <div class="stat-val win">${s.picks}</div>
+      <div class="stat-val lose">${s.bans}</div>
+      <div style="text-align:right;font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--c-text)">${contest}%</div>
+      <div style="text-align:right;font-family:'Share Tech Mono',monospace;font-size:13px;font-weight:600;${w === null ? 'color:var(--c-muted)' : 'color:' + wrColor(w)}">${w === null ? '—' : w + '%'}</div>
+    </div>`;
+  }).join('');
 }
 
 function renderLeaderboard() {
@@ -53,15 +100,20 @@ function renderMatches() {
     const realIdx = state.matches.length - 1 - ri;
     const winColor = m.winner === 'radiant' ? 'var(--c-radiant)' : 'var(--c-dire)';
     const winLabel = m.winner === 'radiant' ? 'Radiant' : 'Dire';
+    const accToName = {};
+    state.players.forEach(p => { if (p.accountId) accToName[p.accountId] = p.name; });
+    const capName1 = m.captains ? accToName[m.captains.radiant] : null;
+    const capName2 = m.captains ? accToName[m.captains.dire] : null;
+    const capBadge = '<span class="cap-badge" title="Drafted this game">C</span>';
     const pills1 = m.team1.map((n, idx) => {
       const hid = m.heroes1 ? m.heroes1[idx] : null;
       const icon = hid ? heroIconHtml(hid, 22) : '';
-      return `<span class="player-hero-pill">${icon}<span>${escHtml(n)}</span></span>`;
+      return `<span class="player-hero-pill">${icon}<span>${escHtml(n)}</span>${n === capName1 ? capBadge : ''}</span>`;
     }).join('');
     const pills2 = m.team2.map((n, idx) => {
       const hid = m.heroes2 ? m.heroes2[idx] : null;
       const icon = hid ? heroIconHtml(hid, 22) : '';
-      return `<span class="player-hero-pill">${icon}<span>${escHtml(n)}</span></span>`;
+      return `<span class="player-hero-pill">${icon}<span>${escHtml(n)}</span>${n === capName2 ? capBadge : ''}</span>`;
     }).join('');
     const t1win = m.winner === 'radiant' ? '<span class="winner-tag">WIN</span>' : '';
     const t2win = m.winner === 'dire'    ? '<span class="winner-tag">WIN</span>' : '';

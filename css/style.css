@@ -135,6 +135,11 @@ body:not(.admin-mode) .admin-content { display: none; }
 .dotabuff-link { display: inline-block; margin-top: 6px; opacity: 0.55; transition: opacity 0.15s; font-size: 10px; color: var(--c-muted); }
 .dotabuff-link:hover { opacity: 1; }
 .dotabuff-link img { width: 16px; height: 16px; display: block; border-radius: 3px; }
+.cap-badge {
+  font-size: 9px; font-weight: 700; line-height: 1; padding: 2px 4px; border-radius: 3px;
+  background: rgba(240,180,41,0.18); color: var(--c-gold); border: 1px solid rgba(240,180,41,0.35);
+  margin-left: 2px; letter-spacing: 0;
+}
 .match-date { font-family: 'Share Tech Mono', monospace; font-size: 11px; }
 
 /* Forms */

@@ -46,6 +46,7 @@
         <button class="active" onclick="showTab('leaderboard')">Board</button>
         <button onclick="showTab('matches')">Matches</button>
         <button onclick="showTab('players')">Players</button>
+        <button onclick="showTab('heroes')">Heroes</button>
         <button class="admin-only" onclick="showTab('log')">Audit</button>
       </div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
@@ -84,6 +85,22 @@
       <input type="text" id="player-search" placeholder="Search players..." maxlength="24" oninput="filterPlayers(this.value)" />
     </div>
     <div id="players-grid" class="players-grid"></div>
+  </div>
+
+  <!-- HERO DRAFT STATS -->
+  <div id="tab-heroes" class="section">
+    <div class="section-top">
+      <div class="section-title">Most Contested Heroes</div>
+      <div id="heroes-subtitle" style="font-size:11px;color:var(--c-muted);letter-spacing:1px"></div>
+    </div>
+    <div class="lb-header" style="grid-template-columns:36px 1fr 70px 70px 90px 80px">
+      <div>#</div><div>Hero</div>
+      <div style="text-align:right">Picks</div>
+      <div style="text-align:right">Bans</div>
+      <div style="text-align:right">Contested</div>
+      <div style="text-align:right">Win Rate</div>
+    </div>
+    <div id="hero-stats-list"></div>
   </div>
 
   <!-- AUDIT LOG (admin only) -->
