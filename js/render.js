@@ -51,6 +51,43 @@ function renderHeroStats() {
       <div style="text-align:right;font-family:'Share Tech Mono',monospace;font-size:13px;font-weight:600;${w === null ? 'color:var(--c-muted)' : 'color:' + wrColor(w)}">${w === null ? '—' : w + '%'}</div>
     </div>`;
   }).join('');
+
+  renderProCompare(top, drafted.length);
+}
+
+function renderProCompare(top, ourGames) {
+  const el = document.getElementById('hero-compare');
+  if (!el) return;
+  if (typeof PRO_META === 'undefined' || !PRO_META.games) { el.innerHTML = ''; return; }
+
+  const rows = top.map(([id, s]) => {
+    const hid = parseInt(id);
+    const h = heroById(hid);
+    const ours = ((s.picks + s.bans) / ourGames) * 100;
+    const p = PRO_META.heroes[hid] || { picks: 0, bans: 0 };
+    const pro = ((p.picks + p.bans) / PRO_META.games) * 100;
+    const delta = Math.round(ours - pro);
+    return `<div class="cmp-row">
+      <div class="cmp-hero">${heroIconHtml(hid, 24)}<span>${escHtml(h ? h.name : 'Hero ' + id)}</span></div>
+      <div class="cmp-bars">
+        <div class="cmp-track"><div class="cmp-bar cmp-us" style="width:${Math.min(100, ours)}%" title="${escHtml(h ? h.name : '')} — our league: ${Math.round(ours)}% contested (${s.picks + s.bans} of ${ourGames} games)"></div></div>
+        <div class="cmp-track"><div class="cmp-bar cmp-pro" style="width:${Math.min(100, pro)}%" title="${escHtml(h ? h.name : '')} — ${escHtml(PRO_META.tournament)}: ${Math.round(pro)}% contested (${p.picks + p.bans} of ${PRO_META.games} games)"></div></div>
+      </div>
+      <div class="cmp-delta" title="Difference in contest rate (percentage points)">${delta > 0 ? '+' : ''}${delta}</div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="section-top" style="margin-bottom:10px">
+      <div class="section-title" style="font-size:13px">Our Meta vs ${escHtml(PRO_META.tournament)}</div>
+      <div style="font-size:11px;color:var(--c-muted);letter-spacing:1px">contest rate — ${ourGames} of our games vs ${PRO_META.games} pro games</div>
+    </div>
+    <div class="cmp-legend">
+      <span><span class="cmp-swatch cmp-us"></span>Our league</span>
+      <span><span class="cmp-swatch cmp-pro"></span>${escHtml(PRO_META.tournament)}</span>
+      <span style="margin-left:auto;color:var(--c-muted)">Δ = ours − pro, percentage points</span>
+    </div>
+    <div class="cmp-chart">${rows}</div>`;
 }
 
 function renderLeaderboard() {
