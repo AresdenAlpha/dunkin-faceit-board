@@ -26,7 +26,7 @@ function renderSyncBar() {
   const remaining = SYNC_COOLDOWN_MS - (Date.now() - last);
   if (remaining > 0) {
     btn.disabled = true;
-    status.textContent = `Up to date — next sync in ${Math.max(1, Math.ceil(remaining / 60000))} min`;
+    status.textContent = `Next sync in ${Math.max(1, Math.ceil(remaining / 60000))} min`;
   } else {
     btn.disabled = false;
     status.textContent = last ? `Last sync: ${new Date(last).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : '';
