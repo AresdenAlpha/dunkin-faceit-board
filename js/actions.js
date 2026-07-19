@@ -217,6 +217,7 @@ function newSeason() {
       if (!state.seasons) state.seasons = [];
       state.seasons.push(archived);
       state.currentSeason = (state.currentSeason || 1) + 1;
+      state.seasonStart = Date.now(); // sync only imports games played after this
       audit('add', `Started Season ${state.currentSeason}`);
       saveState();
       showToast(`Season ${state.currentSeason} started!`);

@@ -8,7 +8,7 @@ const ADMIN_SESSION_KEY = 'deadstats-admin';
 // ============================================================
 // State
 // ============================================================
-let state = { players: [], matches: [], auditLog: [], currentSeason: 1, seasons: [] };
+let state = { players: [], matches: [], auditLog: [], currentSeason: 1, seasons: [], seasonStart: null };
 let isAdmin = false;
 let selectedWinner = null;
 let playerFilter = '';

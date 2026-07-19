@@ -13,6 +13,9 @@ function initFirebase() {
     state.auditLog       = data.auditLog       || [];
     state.deletedMatches = data.deletedMatches || [];
     state.deletedPlayers = data.deletedPlayers || [];
+    state.currentSeason  = data.currentSeason  || 1;
+    state.seasons        = data.seasons        || [];
+    state.seasonStart    = data.seasonStart    || null;
 
     // Deduplicate players that differ only by casing
     const seen = {};
@@ -46,7 +49,10 @@ function saveState() {
     matches:        state.matches,
     auditLog:       state.auditLog,
     deletedMatches: state.deletedMatches || [],
-    deletedPlayers: state.deletedPlayers || []
+    deletedPlayers: state.deletedPlayers || [],
+    currentSeason:  state.currentSeason || 1,
+    seasons:        state.seasons || [],
+    seasonStart:    state.seasonStart || null
   }).catch(err => {
     showToast('Save failed — check connection', true);
     console.error('Firebase save error:', err);

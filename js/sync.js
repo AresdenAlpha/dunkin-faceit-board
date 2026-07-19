@@ -4,7 +4,7 @@
 
 const SYNC_COOLDOWN_MS   = 10 * 60 * 1000;
 const SYNC_LOCK_STALE_MS = 3 * 60 * 1000;
-const SYNC_LOOKBACK_DAYS = 14;      // how far back a sync searches for games
+const SYNC_MAX_LOOKBACK_DAYS = 30;  // hard cap; the real boundary is state.seasonStart
 const SYNC_MAX_POLL      = 20;      // player histories fetched per sync
 const SYNC_MAX_NEW       = 60;      // match details fetched per sync
 const SYNC_MIN_KNOWN     = 6;       // players already in roster for a game to count as ours
@@ -86,14 +86,17 @@ async function runFaceitSync() {
     const roster = (await rosterRef.get()).val() || {};
 
     const knownMatchIds = new Set(state.matches.map(m => m.matchId).filter(Boolean));
-    const cutoff = Math.floor(Date.now() / 1000) - SYNC_LOOKBACK_DAYS * 86400;
+    // Only import games from the current season; seasonStart is stamped by "New Season"
+    const maxCutoff = Math.floor(Date.now() / 1000) - SYNC_MAX_LOOKBACK_DAYS * 86400;
+    const cutoff = state.seasonStart ? Math.max(Math.floor(state.seasonStart / 1000), maxCutoff) : maxCutoff;
+    const lookbackDays = Math.min(SYNC_MAX_LOOKBACK_DAYS, Math.ceil((Date.now() / 1000 - cutoff) / 86400) + 1);
     const pollList = buildPollList(roster);
 
     const candidates = new Map(); // matchId -> start_time
     for (let i = 0; i < pollList.length; i++) {
       setSyncStatus(`Checking players… ${i + 1}/${pollList.length}`);
       try {
-        const ms = await odFetch(`/players/${pollList[i]}/matches?significant=0&date=${SYNC_LOOKBACK_DAYS}&project=start_time&project=lobby_type`);
+        const ms = await odFetch(`/players/${pollList[i]}/matches?significant=0&date=${lookbackDays}&project=start_time&project=lobby_type`);
         ms.forEach(m => {
           if (m.lobby_type === 1 && m.start_time >= cutoff && !knownMatchIds.has(m.match_id)) {
             candidates.set(m.match_id, m.start_time);
@@ -103,16 +106,20 @@ async function runFaceitSync() {
       await syncSleep(300);
     }
 
-    const ordered = [...candidates.entries()].sort((a, b) => a[1] - b[1]).slice(0, SYNC_MAX_NEW);
+    // Newest first: latest games land on the board immediately; older ones backfill on later syncs
+    const ordered = [...candidates.entries()].sort((a, b) => b[1] - a[1]).slice(0, SYNC_MAX_NEW);
     const isKnown = id => !!(id && (roster[id] || playerByAccount(id)));
     const newMatches = [];
     const newPlayers = [];
 
     for (let i = 0; i < ordered.length; i++) {
       setSyncStatus(`Fetching match ${i + 1}/${ordered.length}…`);
-      let md;
-      try { md = await odFetch(`/matches/${ordered[i][0]}`); }
-      catch (e) { await syncSleep(1000); continue; }
+      let md = null;
+      for (let attempt = 0; attempt < 2 && !md; attempt++) {
+        try { md = await odFetch(`/matches/${ordered[i][0]}`); }
+        catch (e) { await syncSleep(2000); }
+      }
+      if (!md) continue;
       await syncSleep(600);
 
       if (!md.players || md.players.length !== 10) continue;
