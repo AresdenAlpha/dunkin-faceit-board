@@ -50,13 +50,19 @@ function playerByAccount(accountId) {
   return state.players.find(p => String(p.accountId) === String(accountId)) || null;
 }
 
-// Which accounts' histories to poll: every current board player, then a random
-// rotation of remaining roster members to fill up to the cap. Board players are
-// never dropped — the cap only trims the roster fill.
+// Which accounts' histories to poll, most-recently-active first: players from
+// recent matches, then remaining board players, then a random rotation of the
+// rest of the roster. Order matters — the poll loop stops early once a long
+// streak of polls stops discovering new games, so actives must come first.
 function buildPollList(roster) {
   const seen = new Set();
   const list = [];
   const push = id => { const k = String(id); if (!seen.has(k)) { seen.add(k); list.push(k); } };
+  const nameToAccount = {};
+  state.players.forEach(p => { if (p.accountId) nameToAccount[p.name] = p.accountId; });
+  [...state.matches].reverse().forEach(m => {
+    [...m.team1, ...m.team2].forEach(n => { if (nameToAccount[n]) push(nameToAccount[n]); });
+  });
   state.players.forEach(p => { if (p.accountId) push(p.accountId); });
   const fill = Object.keys(roster).filter(id => !seen.has(String(id)));
   for (let i = fill.length - 1; i > 0; i--) { // shuffle so unpolled members rotate in over time
@@ -94,9 +100,15 @@ async function runFaceitSync() {
     const lookbackDays = Math.min(SYNC_MAX_LOOKBACK_DAYS, Math.ceil((Date.now() / 1000 - cutoff) / 86400) + 1);
     const pollList = buildPollList(roster);
 
+    // Every game is discoverable through any of its 10 players, and games
+    // cluster among recent actives — so once this many consecutive polls
+    // (in recency order) find nothing new, the rest of the list is skipped.
+    const EMPTY_POLL_STREAK_STOP = 12;
     const candidates = new Map(); // matchId -> start_time
+    let emptyStreak = 0;
     for (let i = 0; i < pollList.length; i++) {
       setSyncStatus(`Checking players… ${i + 1}/${pollList.length}`);
+      const before = candidates.size;
       try {
         const ms = await odFetch(`/players/${pollList[i]}/matches?significant=0&date=${lookbackDays}&project=start_time&project=lobby_type`);
         ms.forEach(m => {
@@ -104,6 +116,8 @@ async function runFaceitSync() {
             candidates.set(m.match_id, m.start_time);
           }
         });
+        emptyStreak = candidates.size > before ? 0 : emptyStreak + 1;
+        if (emptyStreak >= EMPTY_POLL_STREAK_STOP) break;
       } catch (e) { /* one player failing shouldn't kill the sync */ }
       await syncSleep(1000); // stay under OpenDota's 60 calls/min
 
