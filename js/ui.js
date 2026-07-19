@@ -33,26 +33,6 @@ function showConfirm(title, msg, onConfirm, confirmLabel = 'Delete') {
   };
 }
 
-function showInputModal(title, msg, defaultValue, confirmLabel, onConfirm) {
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-msg').innerHTML = msg;
-  document.getElementById('modal-confirm-btn').textContent = confirmLabel;
-  const inp = document.getElementById('modal-input');
-  inp.value = defaultValue;
-  inp.style.display = 'block';
-  inp.style.marginBottom = '16px';
-  document.getElementById('modal-overlay').classList.add('show');
-  setTimeout(() => { inp.focus(); inp.select(); }, 50);
-  inp.onkeydown = e => { if (e.key === 'Enter') modalResolve(true); };
-  modalResolve = (confirmed) => {
-    document.getElementById('modal-overlay').classList.remove('show');
-    inp.style.display = 'none';
-    inp.onkeydown = null;
-    modalResolve = () => {};
-    if (confirmed) onConfirm(inp.value);
-  };
-}
-
 function updateSeasonUI() {
   const s = state.currentSeason || 1;
   const lbl = document.getElementById('season-label');

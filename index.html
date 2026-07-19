@@ -105,7 +105,6 @@
   <div class="modal-box">
     <div class="modal-title" id="modal-title">Confirm</div>
     <div class="modal-msg" id="modal-msg"></div>
-    <input type="text" id="modal-input" class="modal-input" style="display:none" />
     <div class="modal-actions">
       <button class="modal-cancel" onclick="modalResolve(false)">Cancel</button>
       <button class="modal-confirm" id="modal-confirm-btn" onclick="modalResolve(true)">Delete</button>
@@ -140,8 +139,6 @@
     if (matchBtn) { deleteMatch(parseInt(matchBtn.dataset.idx, 10)); return; }
     const expBtn = e.target.closest('.exp-match');
     if (expBtn) { exportMatch(parseInt(expBtn.dataset.idx, 10)); return; }
-    const renameBtn = e.target.closest('.rename-player');
-    if (renameBtn) { renamePlayer(parseInt(renameBtn.dataset.idx, 10)); return; }
   });
 
   document.getElementById('pw-input').addEventListener('keydown', e => {

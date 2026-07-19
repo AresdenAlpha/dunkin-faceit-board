@@ -111,9 +111,6 @@ function renderPlayers() {
     const av = getColor(p.name);
     const s = stats[p.name] || { wins: 0, losses: 0, games: 0 };
     const w = wr(s);
-    const renameBtn = isAdmin
-      ? `<button class="btn-sm rename-player" data-idx="${idx}" style="font-size:10px;padding:2px 8px">rename</button>`
-      : '';
     const season = state.currentSeason || 1;
     const top3 = topHeroes(p.name, season);
     const heroIcons = top3.map(id => heroIconHtml(id, 36)).join('') || '<span style="font-size:11px;color:var(--c-muted)">No heroes yet</span>';
@@ -125,7 +122,6 @@ function renderPlayers() {
           <span class="wr-badge" style="color:${wrColor(w)};background:${wrColor(w)}1a">${w}% WR</span>
         </div>
       </div>
-      ${renameBtn ? `<div style="margin-bottom:8px">${renameBtn}</div>` : ''}
       <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px">${heroIcons}</div>
       <div class="player-stats-row">
         <div class="mini-stat"><div class="mini-stat-val" style="color:var(--c-win)">${s.wins}</div><div class="mini-stat-label">Wins</div></div>

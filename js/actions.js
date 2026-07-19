@@ -1,26 +1,3 @@
-function renamePlayer(idx) {
-  if (!isAdmin) return;
-  const p = state.players[idx];
-  if (!p) return;
-  showInputModal('Rename Player', `Current name: <strong>${escHtml(p.name)}</strong>`, p.name, 'Rename', (newName) => {
-    newName = newName.trim();
-    if (!newName || newName === p.name) return;
-    if (state.players.find((pl, i) => i !== idx && pl.name.toLowerCase() === newName.toLowerCase())) {
-      showToast('A player with that name already exists', true); return;
-    }
-    const oldName = p.name;
-    state.players[idx].name = newName;
-    state.matches.forEach(m => {
-      m.team1 = m.team1.map(n => n === oldName ? newName : n);
-      m.team2 = m.team2.map(n => n === oldName ? newName : n);
-    });
-    audit('add', `Renamed player "${oldName}" to "${newName}"`);
-    saveState();
-    render();
-    showToast(`Renamed to ${newName}`);
-  });
-}
-
 function deleteMatch(idx) {
   if (!isAdmin) return;
   const m = state.matches[idx];
