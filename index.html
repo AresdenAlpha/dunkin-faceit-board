@@ -71,7 +71,13 @@
 
   <!-- MATCH HISTORY -->
   <div id="tab-matches" class="section">
-    <div class="section-top"><div class="section-title">Match History</div></div>
+    <div class="section-top">
+      <div class="section-title">Match History</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span id="sync-status" style="font-size:11px;color:var(--c-muted)"></span>
+        <button class="btn-sm" id="sync-btn" onclick="runFaceitSync()">Sync from FACEIT</button>
+      </div>
+    </div>
     <div id="matches-list"></div>
   </div>
 
@@ -167,6 +173,7 @@
 <script src="js/render.js"></script>
 <script src="js/actions.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/sync.js"></script>
 <script>
   // ── Init ──────────────────────────────────────────────────────
   document.getElementById('match-date').value = new Date().toISOString().split('T')[0];
