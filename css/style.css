@@ -135,23 +135,29 @@ body:not(.admin-mode) .admin-content { display: none; }
 .dotabuff-link { display: inline-block; margin-top: 6px; opacity: 0.55; transition: opacity 0.15s; font-size: 10px; color: var(--c-muted); }
 .dotabuff-link:hover { opacity: 1; }
 .dotabuff-link img { width: 16px; height: 16px; display: block; border-radius: 3px; }
-/* Meta comparison chart */
-.cmp-legend { display: flex; align-items: center; gap: 18px; font-size: 11px; color: var(--c-text); margin-bottom: 12px; flex-wrap: wrap; }
-.cmp-legend > span { display: flex; align-items: center; gap: 6px; }
+/* Meta comparison chart (butterfly: pro grows left, Dunkin grows right) */
+.cmp-heads { display: grid; grid-template-columns: 1fr 64px 1fr; gap: 8px; font-size: 11px; color: var(--c-text); margin-bottom: 10px; }
+.cmp-head-left { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.cmp-head-right { display: flex; align-items: center; gap: 6px; }
 .cmp-swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
-.cmp-swatch.cmp-us { background: #a855f7; }
-.cmp-swatch.cmp-pro { background: #c98500; }
-.cmp-chart { display: flex; flex-direction: column; gap: 7px; }
-.cmp-row { display: grid; grid-template-columns: 180px 1fr 44px; gap: 10px; align-items: center; }
-.cmp-hero { display: flex; align-items: center; gap: 8px; font-size: 12px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.cmp-bars { display: flex; flex-direction: column; gap: 2px; }
-.cmp-track { background: var(--c-surface2); border-radius: 4px; height: 10px; position: relative; }
-.cmp-track::after { content: ''; position: absolute; left: 50%; top: -1px; bottom: -1px; width: 1px; background: var(--c-border2); }
-.cmp-bar { height: 100%; border-radius: 0 4px 4px 0; min-width: 2px; position: relative; z-index: 1; }
-.cmp-bar.cmp-us { background: #a855f7; }
-.cmp-bar.cmp-pro { background: #c98500; }
-.cmp-delta { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--c-muted); text-align: right; }
-@media (max-width: 640px) { .cmp-row { grid-template-columns: 120px 1fr 36px; } }
+.cmp-swatch.cmp-us { background: #9a7fc9; }
+.cmp-swatch.cmp-pro { background: #b98a3e; }
+.cmp-chart { display: flex; flex-direction: column; gap: 8px; }
+.cmp-row { display: grid; grid-template-columns: 1fr 64px 1fr; gap: 8px; align-items: center; }
+.cmp-track { background: var(--c-surface2); border-radius: 4px; height: 12px; position: relative; }
+.cmp-track::after { content: ''; position: absolute; left: 50%; top: -1px; bottom: -1px; width: 1px; background: var(--c-border); }
+.cmp-left { display: flex; justify-content: flex-end; }
+.cmp-bar { height: 100%; min-width: 2px; position: relative; z-index: 1; }
+.cmp-bar.cmp-us { background: #9a7fc9; border-radius: 0 4px 4px 0; }
+.cmp-bar.cmp-pro { background: #b98a3e; border-radius: 4px 0 0 4px; }
+.cmp-mid { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.cmp-delta { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--c-muted); line-height: 1; }
+#cmp-tip {
+  position: fixed; z-index: 100; display: none; pointer-events: none; max-width: 320px;
+  background: var(--c-surface); border: 1px solid var(--c-border2); border-radius: 6px;
+  padding: 6px 10px; font-size: 11px; color: var(--c-text); box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+@media (max-width: 640px) { .cmp-row, .cmp-heads { grid-template-columns: 1fr 48px 1fr; } }
 
 .cap-badge {
   font-size: 9px; font-weight: 700; line-height: 1; padding: 2px 4px; border-radius: 3px;

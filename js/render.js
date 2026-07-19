@@ -63,31 +63,54 @@ function renderProCompare(top, ourGames) {
   const rows = top.map(([id, s]) => {
     const hid = parseInt(id);
     const h = heroById(hid);
+    const name = h ? h.name : 'Hero ' + id;
     const ours = ((s.picks + s.bans) / ourGames) * 100;
     const p = PRO_META.heroes[hid] || { picks: 0, bans: 0 };
     const pro = ((p.picks + p.bans) / PRO_META.games) * 100;
     const delta = Math.round(ours - pro);
     return `<div class="cmp-row">
-      <div class="cmp-hero">${heroIconHtml(hid, 24)}<span>${escHtml(h ? h.name : 'Hero ' + id)}</span></div>
-      <div class="cmp-bars">
-        <div class="cmp-track"><div class="cmp-bar cmp-us" style="width:${Math.min(100, ours)}%" title="${escHtml(h ? h.name : '')} — our league: ${Math.round(ours)}% contested (${s.picks + s.bans} of ${ourGames} games)"></div></div>
-        <div class="cmp-track"><div class="cmp-bar cmp-pro" style="width:${Math.min(100, pro)}%" title="${escHtml(h ? h.name : '')} — ${escHtml(PRO_META.tournament)}: ${Math.round(pro)}% contested (${p.picks + p.bans} of ${PRO_META.games} games)"></div></div>
+      <div class="cmp-track cmp-left"><div class="cmp-bar cmp-pro" style="width:${Math.min(100, pro)}%" data-tip="${escHtml(name)} — ${escHtml(PRO_META.tournament)}: ${Math.round(pro)}% contested (${p.picks + p.bans} of ${PRO_META.games} games, ${p.picks} picks / ${p.bans} bans)"></div></div>
+      <div class="cmp-mid" data-tip="${escHtml(name)} — Δ ${delta > 0 ? '+' : ''}${delta} percentage points (Dunkin − pro)">
+        <div class="cmp-delta">${delta > 0 ? '+' : ''}${delta}</div>
+        ${heroIconHtml(hid, 26)}
       </div>
-      <div class="cmp-delta" title="Difference in contest rate (percentage points)">${delta > 0 ? '+' : ''}${delta}</div>
+      <div class="cmp-track cmp-right"><div class="cmp-bar cmp-us" style="width:${Math.min(100, ours)}%" data-tip="${escHtml(name)} — Dunkin In-House: ${Math.round(ours)}% contested (${s.picks + s.bans} of ${ourGames} games, ${s.picks} picks / ${s.bans} bans)"></div></div>
     </div>`;
   }).join('');
 
   el.innerHTML = `
     <div class="section-top" style="margin-bottom:10px">
-      <div class="section-title" style="font-size:13px">Our Meta vs ${escHtml(PRO_META.tournament)}</div>
-      <div style="font-size:11px;color:var(--c-muted);letter-spacing:1px">contest rate — ${ourGames} of our games vs ${PRO_META.games} pro games</div>
+      <div class="section-title" style="font-size:13px">Dunkin Meta vs ${escHtml(PRO_META.tournament)}</div>
+      <div style="font-size:11px;color:var(--c-muted);letter-spacing:1px">contest rate — ${ourGames} in-house games vs ${PRO_META.games} pro games</div>
     </div>
-    <div class="cmp-legend">
-      <span><span class="cmp-swatch cmp-us"></span>Our league</span>
-      <span><span class="cmp-swatch cmp-pro"></span>${escHtml(PRO_META.tournament)}</span>
-      <span style="margin-left:auto;color:var(--c-muted)">Δ = ours − pro, percentage points</span>
+    <div class="cmp-heads">
+      <div class="cmp-head-left"><span class="cmp-swatch cmp-pro"></span>${escHtml(PRO_META.tournament)}</div>
+      <div></div>
+      <div class="cmp-head-right">Dunkin In-House<span class="cmp-swatch cmp-us"></span></div>
     </div>
     <div class="cmp-chart">${rows}</div>`;
+
+  if (!el._tipBound) {
+    el._tipBound = true;
+    const tip = () => {
+      let t = document.getElementById('cmp-tip');
+      if (!t) { t = document.createElement('div'); t.id = 'cmp-tip'; document.body.appendChild(t); }
+      return t;
+    };
+    el.addEventListener('mousemove', e => {
+      const target = e.target.closest('[data-tip]');
+      const t = tip();
+      if (target) {
+        t.textContent = target.dataset.tip;
+        t.style.display = 'block';
+        t.style.left = Math.min(e.clientX + 14, window.innerWidth - t.offsetWidth - 8) + 'px';
+        t.style.top = (e.clientY + 14) + 'px';
+      } else {
+        t.style.display = 'none';
+      }
+    });
+    el.addEventListener('mouseleave', () => { tip().style.display = 'none'; });
+  }
 }
 
 function renderLeaderboard() {
