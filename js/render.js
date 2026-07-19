@@ -36,7 +36,7 @@ function renderHeroStats() {
 
   const top = Object.entries(hs)
     .sort((a, b) => (b[1].picks + b[1].bans) - (a[1].picks + a[1].bans) || b[1].picks - a[1].picks)
-    .slice(0, 15);
+    .slice(0, 20);
 
   el.innerHTML = top.map(([id, s], i) => {
     const contest = Math.round(((s.picks + s.bans) / drafted.length) * 100);
