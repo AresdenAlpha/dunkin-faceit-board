@@ -17,7 +17,7 @@ function renderLeaderboard() {
 
   const el = document.getElementById('leaderboard-list');
   if (!sorted.length) {
-    el.innerHTML = '<div class="empty-state">No matches logged yet.<br>Log your first match to see the standings.</div>';
+    el.innerHTML = '<div class="empty-state">No matches this season yet.<br>Click Sync from FACEIT after your first games.</div>';
     return;
   }
   el.innerHTML = sorted.map(([name, s], i) => {
@@ -46,7 +46,7 @@ function renderLeaderboard() {
 function renderMatches() {
   const el = document.getElementById('matches-list');
   if (!state.matches.length) {
-    el.innerHTML = '<div class="empty-state">No matches yet.<br>Log your first match!</div>';
+    el.innerHTML = '<div class="empty-state">No matches this season yet.<br>Click Sync from FACEIT after your first games.</div>';
     return;
   }
   el.innerHTML = [...state.matches].reverse().map((m, ri) => {
@@ -85,6 +85,7 @@ function renderMatches() {
       <div class="match-meta">
         <div class="match-date">${m.date || ''}</div>
         ${m.duration ? `<div style="margin-top:4px">${escHtml(m.duration)}</div>` : ''}
+        ${m.matchId ? `<a class="dotabuff-link" href="https://www.dotabuff.com/matches/${m.matchId}" target="_blank" rel="noopener" title="View on Dotabuff"><img src="https://www.dotabuff.com/favicon.ico" alt="Dotabuff" onerror="this.parentNode.textContent='DB'" /></a>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -98,7 +99,7 @@ function renderPlayers() {
     : state.players;
 
   if (!state.players.length) {
-    el.innerHTML = '<div class="empty-state">Add players to get started.</div>';
+    el.innerHTML = '<div class="empty-state">Players appear automatically after the first sync.</div>';
     return;
   }
   if (!filtered.length) {
@@ -160,39 +161,3 @@ function renderAuditLog() {
   }).join('');
 }
 
-function renderMatchForm() {
-  const playerItems = state.players.map(p => ({ value: p.name, label: p.name, icon: null }));
-  const heroItems = heroes.map(h => ({ value: h.id, label: h.name, icon: h.icon }));
-
-  ['team1-rows', 'team2-rows'].forEach((containerId, ti) => {
-    const el = document.getElementById(containerId);
-    if (!el) return;
-    const existing = {};
-    for (let i = 0; i < 5; i++) {
-      const pid = `t${ti+1}p${i}`, hid = `t${ti+1}h${i}`;
-      existing[pid] = csdGetValue(pid);
-      existing[hid] = csdGetValue(hid);
-    }
-    const rows = Array.from({length: 5}, (_, i) => {
-      const pid = `t${ti+1}p${i}`, hid = `t${ti+1}h${i}`;
-      return `<div class="player-hero-row">
-        ${makeCsd(pid, playerItems, '— Player —')}
-        ${makeCsd(hid, heroItems, '— Hero —')}
-      </div>`;
-    }).join('');
-    el.innerHTML = rows;
-    for (let i = 0; i < 5; i++) {
-      const pid = `t${ti+1}p${i}`, hid = `t${ti+1}h${i}`;
-      if (existing[pid]) {
-        const item = playerItems.find(p => p.value === existing[pid]);
-        if (item) { dropdownState[pid].value = item.value; dropdownState[pid].label = item.label;
-          const inp = document.getElementById('csd-input-' + pid); if (inp) inp.value = item.label; }
-      }
-      if (existing[hid]) {
-        const item = heroItems.find(h => String(h.value) === String(existing[hid]));
-        if (item) { dropdownState[hid].value = item.value; dropdownState[hid].label = item.label;
-          const inp = document.getElementById('csd-input-' + hid); if (inp) inp.value = item.label; }
-      }
-    }
-  });
-}

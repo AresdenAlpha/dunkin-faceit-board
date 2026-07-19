@@ -41,5 +41,4 @@ function setAdminMode(on) {
   }
   updateSeasonUI();
   render();
-  if (on) renderMatchForm();
 }

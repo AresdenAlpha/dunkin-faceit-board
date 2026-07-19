@@ -1,19 +1,3 @@
-function addPlayer() {
-  if (!isAdmin) return;
-  const inp = document.getElementById('new-player-name');
-  const name = inp.value.trim();
-  if (!name) return;
-  if (state.players.find(p => p.name.toLowerCase() === name.toLowerCase())) {
-    showToast('Player already exists', true); return;
-  }
-  state.players.push({ name });
-  audit('add', `Added player "${name}"`);
-  playerFilter = '';
-  saveState(); renderPlayers(); renderAuditLog();
-  inp.value = '';
-  showToast(`${name} added`);
-}
-
 function renamePlayer(idx) {
   if (!isAdmin) return;
   const p = state.players[idx];
@@ -70,61 +54,6 @@ function deleteMatch(idx) {
     });
 }
 
-function selectWinner(team) {
-  selectedWinner = team;
-  document.getElementById('win-btn-radiant').className = 'win-btn' + (team === 'radiant' ? ' selected-radiant' : '');
-  document.getElementById('win-btn-dire').className    = 'win-btn' + (team === 'dire'    ? ' selected-dire'    : '');
-}
-
-function logMatch() {
-  if (!isAdmin) return;
-  const date     = document.getElementById('match-date').value;
-  const duration = document.getElementById('match-duration').value.trim();
-  const notes    = document.getElementById('match-notes').value.trim();
-
-  const team1 = [], team2 = [], heroes1 = [], heroes2 = [];
-  for (let i = 0; i < 5; i++) {
-    team1.push(csdGetValue(`t1p${i}`));
-    heroes1.push(csdGetValue(`t1h${i}`) ? parseInt(csdGetValue(`t1h${i}`)) : null);
-    team2.push(csdGetValue(`t2p${i}`));
-    heroes2.push(csdGetValue(`t2h${i}`) ? parseInt(csdGetValue(`t2h${i}`)) : null);
-  }
-
-  if (team1.some(p => !p)) { showToast('All 5 Radiant players must be selected', true); return; }
-  if (team2.some(p => !p)) { showToast('All 5 Dire players must be selected', true); return; }
-  if (!selectedWinner) { showToast('Select the winning team', true); return; }
-
-  const allPlayers = [...team1, ...team2];
-  const unique = new Set(allPlayers);
-  if (unique.size !== allPlayers.length) { showToast('A player cannot appear twice in the same match', true); return; }
-
-  if (heroes1.some(h => !h)) { showToast('All 5 Radiant heroes must be selected', true); return; }
-  if (heroes2.some(h => !h)) { showToast('All 5 Dire heroes must be selected', true); return; }
-
-  const match = {
-    team1, team2, heroes1, heroes2,
-    winner: selectedWinner, date, duration, notes,
-    season: state.currentSeason || 1
-  };
-  state.matches.push(match);
-  const winner = selectedWinner === 'radiant' ? 'Radiant' : 'Dire';
-  audit('log', `Logged match — ${winner} won. Radiant: [${team1.join(', ')}] vs Dire: [${team2.join(', ')}]${date ? ' on ' + date : ''}`, { match });
-  saveState();
-
-  for (let i = 0; i < 5; i++) {
-    csdReset(`t1p${i}`); csdReset(`t1h${i}`);
-    csdReset(`t2p${i}`); csdReset(`t2h${i}`);
-  }
-  document.getElementById('match-duration').value = '';
-  document.getElementById('match-notes').value = '';
-  selectedWinner = null;
-  document.getElementById('win-btn-radiant').className = 'win-btn';
-  document.getElementById('win-btn-dire').className    = 'win-btn';
-
-  showToast('Match logged!');
-  showTab('matches');
-}
-
 function exportDataConfirm() {
   showConfirm('Export Backup',
     'Download a full backup of all players and matches?',
@@ -161,43 +90,6 @@ function exportMatch(idx) {
       URL.revokeObjectURL(url);
       showToast('Match exported!');
     }, 'Export');
-}
-
-function importMatchIntoForm(e) {
-  if (!isAdmin) return;
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const m = JSON.parse(ev.target.result);
-      if (!m.team1 || !m.team2 || !m.winner) throw new Error('Invalid format');
-      if (m.team1.length !== 5 || m.team2.length !== 5) throw new Error('Must be 5v5');
-      document.getElementById('match-date').value = m.date || '';
-      document.getElementById('match-duration').value = m.duration || '';
-      document.getElementById('match-notes').value = m.notes || '';
-      selectWinner(m.winner);
-      for (let i = 0; i < 5; i++) {
-        const pName1 = m.team1[i] || '';
-        const pName2 = m.team2[i] || '';
-        const hId1 = m.heroes1 ? m.heroes1[i] : null;
-        const hId2 = m.heroes2 ? m.heroes2[i] : null;
-        const pItem1 = dropdownState[`t1p${i}`]?.items.find(p => p.value === pName1);
-        const pItem2 = dropdownState[`t2p${i}`]?.items.find(p => p.value === pName2);
-        const hItem1 = hId1 ? dropdownState[`t1h${i}`]?.items.find(h => String(h.value) === String(hId1)) : null;
-        const hItem2 = hId2 ? dropdownState[`t2h${i}`]?.items.find(h => String(h.value) === String(hId2)) : null;
-        if (pItem1) { dropdownState[`t1p${i}`].value = pItem1.value; dropdownState[`t1p${i}`].label = pItem1.label; document.getElementById('csd-input-t1p' + i).value = pItem1.label; }
-        if (pItem2) { dropdownState[`t2p${i}`].value = pItem2.value; dropdownState[`t2p${i}`].label = pItem2.label; document.getElementById('csd-input-t2p' + i).value = pItem2.label; }
-        if (hItem1) { dropdownState[`t1h${i}`].value = hItem1.value; dropdownState[`t1h${i}`].label = hItem1.label; document.getElementById('csd-input-t1h' + i).value = hItem1.label; }
-        if (hItem2) { dropdownState[`t2h${i}`].value = hItem2.value; dropdownState[`t2h${i}`].label = hItem2.label; document.getElementById('csd-input-t2h' + i).value = hItem2.label; }
-      }
-      showToast('Match loaded into form!');
-    } catch(err) {
-      showToast('Invalid match file', true);
-    }
-  };
-  reader.readAsText(file);
-  e.target.value = '';
 }
 
 function filterPlayers(query) {

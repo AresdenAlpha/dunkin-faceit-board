@@ -12,7 +12,6 @@ async function loadHeroes() {
         name: h.localized_name,
         icon: h.icon ? 'https://cdn.cloudflare.steamstatic.com' + h.icon : null
       }));
-    renderMatchForm();
   } catch(e) {
     console.warn('Failed to load heroes:', e);
   }

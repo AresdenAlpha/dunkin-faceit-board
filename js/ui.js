@@ -1,12 +1,12 @@
 function showTab(tab) {
-  const tabs = ['leaderboard','matches','players','add','log'];
+  const tabs = ['leaderboard','matches','players','log'];
   tabs.forEach(t => {
     const el = document.getElementById('tab-' + t);
     if (el) el.classList.toggle('visible', t === tab);
   });
   document.querySelectorAll('.nav button').forEach((b, i) => {
     const tabNames = isAdmin
-      ? ['leaderboard','matches','players','add','log']
+      ? ['leaderboard','matches','players','log']
       : ['leaderboard','matches','players'];
     b.classList.toggle('active', tabNames[i] === tab);
   });

@@ -46,7 +46,6 @@
         <button class="active" onclick="showTab('leaderboard')">Board</button>
         <button onclick="showTab('matches')">Matches</button>
         <button onclick="showTab('players')">Players</button>
-        <button class="admin-only" onclick="showTab('add')">+ Log</button>
         <button class="admin-only" onclick="showTab('log')">Audit</button>
       </div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
@@ -82,54 +81,9 @@
   <!-- PLAYERS -->
   <div id="tab-players" class="section">
     <div class="add-player-form">
-      <input type="text" id="new-player-name" placeholder="Search or add player..." maxlength="24" oninput="filterPlayers(this.value)" />
-      <button class="btn-sm admin-only" onclick="addPlayer()">+ Add</button>
+      <input type="text" id="player-search" placeholder="Search players..." maxlength="24" oninput="filterPlayers(this.value)" />
     </div>
     <div id="players-grid" class="players-grid"></div>
-  </div>
-
-  <!-- LOG MATCH (admin only) -->
-  <div id="tab-add" class="section">
-    <div class="form-card">
-      <div class="form-title">Log Match</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Date</label>
-          <input type="date" id="match-date" />
-        </div>
-        <div class="form-group">
-          <label>Duration (optional)</label>
-          <input type="text" id="match-duration" placeholder="e.g. 32 min" />
-        </div>
-      </div>
-      <div class="teams-row">
-        <div class="form-group">
-          <label style="color:var(--c-radiant)">Radiant <span style="color:var(--c-muted);font-weight:400">(5 players)</span></label>
-          <div class="team-rows" id="team1-rows"></div>
-        </div>
-        <div class="vs-divider">VS</div>
-        <div class="form-group">
-          <label style="color:var(--c-dire)">Dire <span style="color:var(--c-muted);font-weight:400">(5 players)</span></label>
-          <div class="team-rows" id="team2-rows"></div>
-        </div>
-      </div>
-      <div class="form-group" style="margin-bottom:20px">
-        <label>Winner</label>
-        <div class="win-selector">
-          <button class="win-btn" id="win-btn-radiant" onclick="selectWinner('radiant')">Radiant</button>
-          <button class="win-btn" id="win-btn-dire" onclick="selectWinner('dire')">Dire</button>
-        </div>
-      </div>
-      <div class="form-group" style="margin-bottom:24px">
-        <label>Notes (optional)</label>
-        <input type="text" id="match-notes" placeholder="e.g. comeback win, final push..." />
-      </div>
-      <button class="btn-primary" onclick="logMatch()">Log Match</button>
-      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--c-border);display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-        <button class="btn-sm" onclick="document.getElementById('import-match-file').click()">Import Match</button>
-        <input type="file" id="import-match-file" accept=".json" style="display:none" onchange="importMatchIntoForm(event)" />
-      </div>
-    </div>
   </div>
 
   <!-- AUDIT LOG (admin only) -->
@@ -165,7 +119,6 @@
 <script src="js/config.js"></script>
 <script src="js/state.js"></script>
 <script src="js/heroes.js"></script>
-<script src="js/dropdown.js"></script>
 <script src="js/firebase.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/render.js"></script>
@@ -174,8 +127,6 @@
 <script src="js/sync.js"></script>
 <script>
   // ── Init ──────────────────────────────────────────────────────
-  document.getElementById('match-date').value = new Date().toISOString().split('T')[0];
-
   if (localStorage.getItem(ADMIN_SESSION_KEY) === '1') {
     setAdminMode(true);
   }
@@ -197,10 +148,6 @@
 
   document.getElementById('pw-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') tryAdminLogin();
-  });
-
-  document.getElementById('new-player-name').addEventListener('keydown', e => {
-    if (e.key === 'Enter') addPlayer();
   });
 
   loadHeroes().then(() => initFirebase()).catch(() => initFirebase());
