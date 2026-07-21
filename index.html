@@ -154,13 +154,6 @@
     if (e.target === document.getElementById('modal-overlay')) modalResolve(false);
   });
 
-  document.addEventListener('click', e => {
-    const matchBtn = e.target.closest('.del-match');
-    if (matchBtn) { deleteMatch(parseInt(matchBtn.dataset.idx, 10)); return; }
-    const expBtn = e.target.closest('.exp-match');
-    if (expBtn) { exportMatch(parseInt(expBtn.dataset.idx, 10)); return; }
-  });
-
   document.getElementById('pw-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') tryAdminLogin();
   });

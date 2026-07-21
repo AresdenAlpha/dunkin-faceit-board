@@ -1,22 +1,3 @@
-function deleteMatch(idx) {
-  if (!isAdmin) return;
-  const m = state.matches[idx];
-  if (!m) return;
-  const t1 = m.team1.join(', ');
-  const t2 = m.team2.join(', ');
-  const winner = m.winner === 'radiant' ? 'Radiant' : 'Dire';
-  showConfirm('Delete Match',
-    `Delete match: <strong>${escHtml(t1)}</strong> vs <strong>${escHtml(t2)}</strong>?<br><span style="color:var(--c-muted);font-size:12px">Winner: ${winner} — ${m.date || 'no date'}</span>`,
-    () => {
-      if (!state.deletedMatches) state.deletedMatches = [];
-      state.deletedMatches.push({ ...m, deletedAt: new Date().toISOString() });
-      audit('del', `Deleted match — ${winner} won (${m.date || 'no date'}). Teams: [${t1}] vs [${t2}]`, { match: m });
-      state.matches.splice(idx, 1);
-      saveState(); render();
-      showToast('Match deleted');
-    });
-}
-
 function exportDataConfirm() {
   showConfirm('Export Backup',
     'Download a full backup of all players and matches?',
@@ -34,24 +15,6 @@ function exportDataConfirm() {
       a.click();
       URL.revokeObjectURL(url);
       showToast('Backup exported!');
-    }, 'Export');
-}
-
-function exportMatch(idx) {
-  const m = state.matches[idx];
-  if (!m) return;
-  const label = m.date ? `match on ${m.date}` : 'this match';
-  showConfirm('Export Match',
-    `Export ${label}?`,
-    () => {
-      const blob = new Blob([JSON.stringify(m, null, 2)], { type: 'application/json' });
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      a.href = url;
-      a.download = `match-${m.date || 'unknown'}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast('Match exported!');
     }, 'Export');
 }
 

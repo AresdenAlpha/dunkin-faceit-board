@@ -178,17 +178,10 @@ function renderMatches() {
     }).join('');
     const t1win = m.winner === 'radiant' ? '<span class="winner-tag">WIN</span>' : '';
     const t2win = m.winner === 'dire'    ? '<span class="winner-tag">WIN</span>' : '';
-    const delBtn = isAdmin
-      ? `<button class="btn-danger del-match" data-idx="${realIdx}">del</button>`
-      : '';
-    const expBtn = isAdmin
-      ? `<button class="btn-sm exp-match" data-idx="${realIdx}" style="font-size:10px;padding:2px 6px;margin-top:4px">export</button>`
-      : '';
     return `<div class="match-card">
       <div>
         <div class="match-result" style="color:${winColor}">${escHtml(winLabel)}</div>
         <div class="match-score">Victory</div>
-        <div style="margin-top:8px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center">${delBtn}${expBtn}</div>
       </div>
       <div class="match-teams">
         <div class="match-team"><span class="team-label radiant">Radiant</span>${t1win} ${pills1}</div>
