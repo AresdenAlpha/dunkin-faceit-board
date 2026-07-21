@@ -2,17 +2,17 @@
 const PRO_META = {
   "tournament": "Esports World Cup 2026",
   "leagueId": 19785,
-  "snapshotDate": "2026-07-19",
-  "games": 154,
+  "snapshotDate": "2026-07-21",
+  "games": 156,
   "heroes": {
     "2": {
       "picks": 35,
-      "bans": 52,
+      "bans": 53,
       "wins": 14
     },
     "3": {
       "picks": 44,
-      "bans": 59,
+      "bans": 61,
       "wins": 24
     },
     "4": {
@@ -27,7 +27,7 @@ const PRO_META = {
     },
     "6": {
       "picks": 36,
-      "bans": 87,
+      "bans": 88,
       "wins": 15
     },
     "7": {
@@ -52,7 +52,7 @@ const PRO_META = {
     },
     "11": {
       "picks": 37,
-      "bans": 98,
+      "bans": 100,
       "wins": 23
     },
     "12": {
@@ -61,9 +61,9 @@ const PRO_META = {
       "wins": 5
     },
     "13": {
-      "picks": 34,
-      "bans": 76,
-      "wins": 11
+      "picks": 35,
+      "bans": 77,
+      "wins": 12
     },
     "14": {
       "picks": 4,
@@ -91,9 +91,9 @@ const PRO_META = {
       "wins": 3
     },
     "19": {
-      "picks": 31,
+      "picks": 32,
       "bans": 45,
-      "wins": 16
+      "wins": 17
     },
     "20": {
       "picks": 0,
@@ -117,7 +117,7 @@ const PRO_META = {
     },
     "25": {
       "picks": 18,
-      "bans": 15,
+      "bans": 16,
       "wins": 14
     },
     "26": {
@@ -131,13 +131,13 @@ const PRO_META = {
       "wins": 3
     },
     "28": {
-      "picks": 19,
-      "bans": 14,
-      "wins": 14
+      "picks": 20,
+      "bans": 15,
+      "wins": 15
     },
     "29": {
       "picks": 7,
-      "bans": 13,
+      "bans": 14,
       "wins": 3
     },
     "30": {
@@ -166,9 +166,9 @@ const PRO_META = {
       "wins": 1
     },
     "36": {
-      "picks": 22,
+      "picks": 23,
       "bans": 35,
-      "wins": 12
+      "wins": 13
     },
     "37": {
       "picks": 2,
@@ -176,8 +176,8 @@ const PRO_META = {
       "wins": 1
     },
     "38": {
-      "picks": 31,
-      "bans": 48,
+      "picks": 32,
+      "bans": 49,
       "wins": 12
     },
     "39": {
@@ -237,17 +237,17 @@ const PRO_META = {
     },
     "53": {
       "picks": 16,
-      "bans": 53,
+      "bans": 55,
       "wins": 11
     },
     "54": {
-      "picks": 9,
+      "picks": 10,
       "bans": 15,
-      "wins": 4
+      "wins": 5
     },
     "55": {
       "picks": 29,
-      "bans": 67,
+      "bans": 68,
       "wins": 19
     },
     "56": {
@@ -336,13 +336,13 @@ const PRO_META = {
       "wins": 8
     },
     "74": {
-      "picks": 24,
-      "bans": 40,
+      "picks": 25,
+      "bans": 41,
       "wins": 15
     },
     "75": {
       "picks": 3,
-      "bans": 3,
+      "bans": 4,
       "wins": 1
     },
     "77": {
@@ -356,13 +356,13 @@ const PRO_META = {
       "wins": 0
     },
     "79": {
-      "picks": 3,
+      "picks": 4,
       "bans": 4,
       "wins": 1
     },
     "80": {
       "picks": 20,
-      "bans": 131,
+      "bans": 133,
       "wins": 12
     },
     "82": {
@@ -372,7 +372,7 @@ const PRO_META = {
     },
     "83": {
       "picks": 15,
-      "bans": 137,
+      "bans": 139,
       "wins": 10
     },
     "84": {
@@ -382,7 +382,7 @@ const PRO_META = {
     },
     "85": {
       "picks": 37,
-      "bans": 55,
+      "bans": 57,
       "wins": 23
     },
     "86": {
@@ -391,7 +391,7 @@ const PRO_META = {
       "wins": 11
     },
     "87": {
-      "picks": 10,
+      "picks": 11,
       "bans": 2,
       "wins": 4
     },
@@ -406,9 +406,9 @@ const PRO_META = {
       "wins": 1
     },
     "90": {
-      "picks": 33,
+      "picks": 35,
       "bans": 75,
-      "wins": 20
+      "wins": 21
     },
     "91": {
       "picks": 5,
@@ -431,7 +431,7 @@ const PRO_META = {
       "wins": 0
     },
     "96": {
-      "picks": 38,
+      "picks": 39,
       "bans": 51,
       "wins": 21
     },
@@ -472,17 +472,17 @@ const PRO_META = {
     },
     "106": {
       "picks": 46,
-      "bans": 57,
+      "bans": 58,
       "wins": 28
     },
     "107": {
-      "picks": 66,
+      "picks": 67,
       "bans": 38,
       "wins": 33
     },
     "108": {
       "picks": 11,
-      "bans": 16,
+      "bans": 18,
       "wins": 4
     },
     "109": {
@@ -501,8 +501,8 @@ const PRO_META = {
       "wins": 1
     },
     "112": {
-      "picks": 31,
-      "bans": 19,
+      "picks": 32,
+      "bans": 20,
       "wins": 20
     },
     "114": {
@@ -511,14 +511,14 @@ const PRO_META = {
       "wins": 5
     },
     "119": {
-      "picks": 37,
+      "picks": 38,
       "bans": 6,
-      "wins": 17
+      "wins": 18
     },
     "120": {
-      "picks": 17,
+      "picks": 18,
       "bans": 17,
-      "wins": 7
+      "wins": 8
     },
     "121": {
       "picks": 8,
@@ -526,9 +526,9 @@ const PRO_META = {
       "wins": 2
     },
     "123": {
-      "picks": 66,
+      "picks": 68,
       "bans": 39,
-      "wins": 37
+      "wins": 39
     },
     "126": {
       "picks": 3,
@@ -571,13 +571,13 @@ const PRO_META = {
       "wins": 2
     },
     "145": {
-      "picks": 19,
+      "picks": 21,
       "bans": 53,
       "wins": 13
     },
     "155": {
       "picks": 38,
-      "bans": 52,
+      "bans": 54,
       "wins": 21
     }
   }
